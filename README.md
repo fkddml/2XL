@@ -67,7 +67,6 @@ h1 {
     font-family: 'OkDandan', sans-serif !important;
 }
 
-/* 메인 타이틀 글씨의 네온사인(text-shadow) 효과 완전히 삭제 */
 h1 span {
     color: var(--accent);
 }
@@ -122,6 +121,14 @@ button:hover {
     background: #0077b6;
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(0, 180, 216, 0.3);
+}
+
+/* 로딩 애니메이션 스타일 */
+.loading-text {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 15px 0;
+    font-style: italic;
 }
 
 .quiz-layout {
@@ -215,7 +222,6 @@ button:hover {
     text-align: center;
 }
 
-/* 결과 화면 큰 점수 글씨의 네온사인 효과 삭제 */
 .score {
     font-size: 64px;
     font-weight: 900;
@@ -427,7 +433,8 @@ button:hover {
             <div class="section-title">🔍 내가 틀린 문제 & 정답 확인</div>
             <div id="reviewSection" class="review-section"></div>
 
-            <div class="section-title">🏆 명예의 전당</div>
+            <div class="section-title">🏆 명예의 전당 (실시간 전체 순위)</div>
+            <div id="rankLoading" class="loading-text">순위를 불러오는 중... @ ㅁ @</div>
             <ul id="rankList" class="rank-list"></ul>
             <br>
         </div>
@@ -435,7 +442,10 @@ button:hover {
 </div>
 
 <script>
-/* [수정] 특수 따옴표(“, ”)를 일반 따옴표("")로 교체했습니다. */
+// 온라인 서버 연동 설정 (공용 무료 데이터베이스 연결)
+const DB_URL = "https://ootdranking-00f7.restdb.io/rest/scores";
+const DB_KEY = "661f4fa060c5de3301a2dcd6"; 
+
 const bubbleTexts = [
     "슬슬 두꺼운 옷을 꺼내야 할 때가 온 것 같다", "옷 따뜻하게 입어", "태어나줘서 고마워 🫶 오늘 하루 좋은 일만 있기를🙌", "미안해~ 매번 사랑한다고 하면 그 진심이 가벼워 보일까봐 그 말을 아껴두고 있어", 
     "엉 나도 많이 사랑해", "감기걸리지않도록", "저녁 아직 안먹었겠지 맛진저녁 되세요 😋💪", 
@@ -601,28 +611,74 @@ function submitQuestion() {
     }
 }
 
-function finishGame() {
+// [핵심 변경] 결과를 서버에 업로드하고 실시간 순위판을 가져오는 로직
+async function finishGame() {
     document.getElementById("quizScreen").classList.add("hidden");
     document.getElementById("resultScreen").classList.remove("hidden");
 
     const final = Math.min(100, Math.round(totalScore));
     document.getElementById("finalScore").innerText = final + "점";
 
-    let ranking = JSON.parse(localStorage.getItem("ootdRanking")) || [];
-    ranking.push({ name: nickname, score: final });
-    ranking.sort((a, b) => b.score - a.score);
-    ranking = ranking.slice(0, 10);
-    localStorage.setItem("ootdRanking", JSON.stringify(ranking));
+    // 1. 틀린 문제 피드백 UI 그리기
+    renderReview();
 
+    // 2. 서버(DB)에 내 점수 실시간 전송
+    try {
+        await fetch(DB_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-apikey": DB_KEY,
+                "Cache-Control": "no-cache"
+            },
+            body: JSON.stringify({ name: nickname, score: final })
+        });
+    } catch (err) {
+        console.error("점수 등록 실패:", err);
+    }
+
+    // 3. 서버에서 전체 유저 등수 순으로 Top 10 가져와서 보여주기
+    loadGlobalRanking();
+}
+
+async function loadGlobalRanking() {
     const rankList = document.getElementById("rankList");
-    rankList.innerHTML = "";
-    ranking.forEach((item, index) => {
-        const li = document.createElement("li");
-        if (index === 0) li.className = "top-rank";
-        li.innerHTML = `<span>${index + 1}. ${item.name}</span> <span>${item.score}점</span>`;
-        rankList.appendChild(li);
-    });
+    const loadingText = document.getElementById("rankLoading");
 
+    try {
+        // 점수 높은 순 정렬 및 상위 10개 커트라인 조회 URL 설정
+        const queryUrl = `${DB_URL}?q={}&h={"$max":10}&s={"score":-1}`;
+        const response = await fetch(queryUrl, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "x-apikey": DB_KEY,
+                "Cache-Control": "no-cache"
+            }
+        });
+        const ranking = await response.json();
+
+        loadingText.classList.add("hidden");
+        rankList.innerHTML = "";
+
+        if(ranking.length === 0) {
+            rankList.innerHTML = "<li>등록된 순위가 아직 없습니다!</li>";
+            return;
+        }
+
+        ranking.forEach((item, index) => {
+            const li = document.createElement("li");
+            if (index === 0) li.className = "top-rank";
+            li.innerHTML = `<span>${index + 1}. ${item.name}</span> <span>${item.score}점</span>`;
+            rankList.appendChild(li);
+        });
+    } catch (err) {
+        loadingText.innerText = "순위를 불러오는 데 실패했습니다 ㅜ_ㅜ";
+        console.error("순위 로딩 실패:", err);
+    }
+}
+
+function renderReview() {
     const reviewSection = document.getElementById("reviewSection");
     reviewSection.innerHTML = "";
 
@@ -661,7 +717,7 @@ function finishGame() {
 
         card.innerHTML = `
             <div class="review-header">
-                <span class="review-q-num">${hist.qNum}</span>
+                <span class="review-q-num">${hist.qNum}번 문제</span>
                 <span class="review-date">${hist.date}</span>
             </div>
             <div class="review-body">
