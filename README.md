@@ -6,7 +6,7 @@
 <title>꿈의 핏 2XL</title>
 
 <style>
-/* [변경] 새로운 전체 폰트 'OkDandan' 등록 */
+/* 새로운 전체 폰트 'OkDandan' 등록 */
 @font-face {
     font-family: 'OkDandan';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2508-2@1.0/OkDanDan-Bold.woff2') format('woff2');
@@ -14,18 +14,16 @@
     font-style: normal;
 }
 
-/* [변경] 배경색 흰색 계열, 글씨색 검정 계열로 색상 반전 */
 :root {
-    --bg: #f8f9fa;            /* 연한 회색 배경 */
-    --card: #ffffff;          /* 흰색 카드 배경 */
-    --accent: #00b4d8;        /* 밝은 배경에 어울리는 진한 하늘색 */
+    --bg: #f8f9fa;            
+    --card: #ffffff;          
+    --accent: #00b4d8;        
     --accent-dim: rgba(0, 180, 216, 0.1);
-    --text-primary: #1a1a1a;  /* 어두운 검정 계열 글씨 */
-    --text-muted: #4a5568;    /* 진한 회색 글씨 */
-    --border-color: #cbd5e1;  /* 밝은 회색 테두리 */
+    --text-primary: #1a1a1a;  
+    --text-muted: #4a5568;    
+    --border-color: #cbd5e1;  
 }
 
-/* [변경] 타이틀을 포함한 전체 요소에 OkDandan 폰트 적용 */
 * {
     margin: 0;
     padding: 0;
@@ -65,9 +63,13 @@ h1 {
     letter-spacing: -0.05em;
 }
 
+.title-font, .title-font span {
+    font-family: 'OkDandan', sans-serif !important;
+}
+
+/* [수정] 메인 타이틀 글씨의 네온사인(text-shadow) 효과 완전히 삭제 */
 h1 span {
     color: var(--accent);
-    text-shadow: 0 0 4px rgba(0, 180, 216, 0.2);
 }
 
 .status {
@@ -213,12 +215,12 @@ button:hover {
     text-align: center;
 }
 
+/* [수정] 결과 화면 큰 점수 글씨의 네온사인(text-shadow) 효과 삭제 */
 .score {
     font-size: 64px;
     font-weight: 900;
     margin: 10px 0 30px 0;
     color: var(--accent);
-    text-shadow: 0 0 10px rgba(0, 180, 216, 0.2);
 }
 
 .section-title {
@@ -391,7 +393,7 @@ button:hover {
 <body>
 
 <div class="container">
-    <h1>꿈의 핏 <span>2XL</span></h1>
+    <h1 class="title-font">꿈의 핏 <span>2XL</span></h1>
 
     <div id="loginScreen">
         <div class="login">
@@ -443,7 +445,6 @@ const partTitles = {
     hat: "모자", top: "상의", bottom: "하의", accessory: "악세사리", shoes: "신발"
 };
 
-/* [추가] 조사가 어울리게 나오도록 부위별 메시지 세팅 */
 const partPostpositions = {
     hat: "가", top: "가", bottom: "가", accessory: "가", shoes: "가"
 };
@@ -558,7 +559,6 @@ function submitQuestion() {
     const keys = ["hat", "top", "bottom", "accessory", "shoes"];
     keys.forEach(key => { if (q[key]) activeParts.push(key); });
 
-    /* [변경] 경고 알림창 멘트를 요구사항에 맞춰 수정 */
     for (let part of activeParts) {
         if (selectedAnswers[part] === undefined) {
             const postposition = partPostpositions[part] || "이";
