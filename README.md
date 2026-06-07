@@ -67,7 +67,6 @@ h1 {
     font-family: 'OkDandan', sans-serif !important;
 }
 
-/* [수정] 메인 타이틀 글씨의 네온사인(text-shadow) 효과 완전히 삭제 */
 h1 span {
     color: var(--accent);
 }
@@ -86,7 +85,7 @@ h1 span {
     flex-direction: column;
     gap: 16px;
     max-width: 400px;
-    margin: 60px auto;
+    margin: 40px auto 20px auto;
 }
 
 input {
@@ -122,6 +121,13 @@ button:hover {
     background: #0077b6;
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(0, 180, 216, 0.3);
+}
+
+.loading-text {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 15px 0;
+    font-style: italic;
 }
 
 .quiz-layout {
@@ -215,7 +221,6 @@ button:hover {
     text-align: center;
 }
 
-/* [수정] 결과 화면 큰 점수 글씨의 네온사인(text-shadow) 효과 삭제 */
 .score {
     font-size: 64px;
     font-weight: 900;
@@ -225,7 +230,7 @@ button:hover {
 
 .section-title {
     font-size: 1.3rem;
-    margin: 40px 0 16px 0;
+    margin: 30px 0 16px 0;
     color: var(--text-primary);
     display: flex;
     align-items: center;
@@ -401,6 +406,12 @@ button:hover {
             <input id="password" type="password" maxlength="4" placeholder="비밀번호(4자리)">
             <button onclick="startGame()">START!</button>
         </div>
+        
+        <div style="margin-top: 40px; text-align: center;">
+            <div class="section-title">명예의 전당</div>
+            <div id="startRankLoading" class="loading-text">순위를 불러오는 중... @ ㅁ @</div>
+            <ul id="startRankList" class="rank-list"></ul>
+        </div>
     </div>
 
     <div id="quizScreen" class="hidden">
@@ -424,10 +435,11 @@ button:hover {
             
             <button onclick="location.reload()" style="max-width:300px; margin-bottom:40px;">다시 도전하기</button>
 
-            <div class="section-title">나에대해알려줄게</div>
+            <div class="section-title">나에대해더알아오도록해</div>
             <div id="reviewSection" class="review-section"></div>
 
-            <div class="section-title">떵잘알상을주도록할게 🐈‍⬛</div>
+            <div class="section-title">명예의 전당</div>
+            <div id="rankLoading" class="loading-text">순위를 불러오는 중... @ ㅁ @</div>
             <ul id="rankList" class="rank-list"></ul>
             <br>
         </div>
@@ -435,18 +447,23 @@ button:hover {
 </div>
 
 <script>
+// 온라인 서버 연동 설정 (공용 무료 데이터베이스 연결)
+const DB_URL = "https://ootdranking-00f7.restdb.io/rest/scores";
+const DB_KEY = "661f4fa060c5de3301a2dcd6"; 
+
 const bubbleTexts = [
     "슬슬 두꺼운 옷을 꺼내야 할 때가 온 것 같다", "옷 따뜻하게 입어", "태어나줘서 고마워 🫶 오늘 하루 좋은 일만 있기를🙌", "미안해~ 매번 사랑한다고 하면 그 진심이 가벼워 보일까봐 그 말을 아껴두고 있어", 
     "엉 나도 많이 사랑해", "감기걸리지않도록", "저녁 아직 안먹었겠지 맛진저녁 되세요 😋💪", 
-    "미리 잘자고나도잘잘게!!!!!!!!오늘고생많았다", "옷으로말하고있잖아 뭔말인지알지", "그니까 레고를 레고 레고레츠고레츠고레고레츠고레츠고레고레고레고레고레츠고레고레츠고레고 오케이?", "티라노 된다된다하면 진짜 되잖아요 어릴 때부터 티라노 된다 된다하니까 되더라고 진짜", "뭐해 /// @ ㅁ @ ///", "ㅋㅋㄹㅃㅃ ㅋㅋㄹ레뿅이라는뜻", "점심 마라마파두부덮밥 저녁 야채찜", "응원해줘서 고마워 ㅜ.ㅜ 항상 ㅎ.ㅎ", "다같이 6 7~~~~~~", "하하하 내 의도를 완벽히 파악했네~ 최고의 콤비 우리 둘은!", "- 앞으로만가의정석 정답과 해설 중 p. 915 -", "앞으로만가의정석 조금더 남아서 공부할 필요 있을거 같아.", "겉으로는 아닌 척해도 속으로는 위트 있는 성현이 멋있어보인다.", "???에 들어갈 지문을 완성", "개인적으로 햄버거는 치킨버거 혹은 불고기 버거라고 생각했습니다", "암튼 그나저나 이러쿵저러쿵 천방지축 이래저래 요리조리 제멋대로 내멋대로 찬란하게 찬란한 하루 보내", "(훗나좀똑똑명석해)", "나 왜이렇게 좋아해 😏 못말려 정말", "항상사랑합니다 아이러브유!", "우리모두열심히살아보자 파이팅", "love you30000", "오하어 (오늘하루어땠냐는뜻)", "궁금한점 궁금두점 음~궁금 맛있다 냠냠", "오좋저(오늘도좋은저녁이라는뜻이면서도이제는우리가헤어져야할시간다음에또만나요를말해야할거같다는뜻", "김치찜이오고있어 김치찜이앞으로만오고있어", "별자리가 어떻게 돼 아닌데 내 옆자린데", "우린 화이트같아 흰색처럼 그위에무슨색을덮히고입혀도 다물들듯이 우린 우리만의 추억과 스톨리를 써내려갈테야 storrrrry", "오늘도 고생많았어 잘하고 있어 파이팅!!!!!!!!!!!", "오늘 무슨 날인지 알아? 아니? You’re mine day", "고생많았다는말 해주고싶어 행복해꼭알겠지", "바쁘게살고열심히살다보면가끔 작은 것들을 놓칠 수 있는데 다 괜찮으니까 알지 인생은 기세 나도 열심히 노력할게", "시간참빠르고 근데위딧을향해가는내마음이더빨라", "전원버튼누르면세상에서제일소중한사람나온대요.", "맑은하늘상쾌한공기 습하 와우", "(나지?나일거야음나였으면좋겠다히히)", "약간 그사람되게 무빙만봐도 좀 멋지다? 는느낌 멋진사람일 것 같다? 는 느낌 드네", "뭐든할수있다는사실 파이탱 으샤샤샤 으쌰으쌰 아자자자", "뭐햄뭐햄"
+    "미리 잘자고나도잘잘게!!!!!!!!오늘고생많았다", "옷으로말하고있잖아 뭔말인지알지", "그니까 레고를 레고 레고레츠고레츠고레고레츠고레츠고레고레고레고레고레츠고레고레츠고레고 오케이?", "티라노 된다된다하면 진짜 되잖아요 어릴 때부터 티라노 된다 된다하니까 되더라고 진짜", "뭐해 /// @ ㅁ @ ///", "ㅋㅋㄹㅃㅃ ㅋㅋㄹ레뿅이라는뜻", "점심 마라마파두부덮밥 저녁 야채찜", "응원해줘서 고마워 ㅜ.ㅜ 항상 ㅎ.ㅎ", "다같이 6 7~~~~~~", "하하하 내 의도를 완벽히 파악했네~ 최고의 콤비 우리 둘은!", "- 앞으로만가의정석 정답과 해설 중 p. 915 -", "앞으로만가의정석 조금더 남아서 공부할 필요 있을거 같아.", "겉으로는 아닌 척해도 속으로는 위트 있는 성현이 멋있어보인다.", "???에 들어갈 지문을 완성", "개인적으로 햄버거는 치킨버거 혹은 불고기 버거라고 생각했습니다", "암튼 그나저나 이러쿵저러쿵 천방지축 이래저래 요리조리 제멋대로 내멋대로 찬란하게 찬란한 하루 보내", "(훗나좀똑똑명석해)", "나 왜이렇게 좋아해 😏 못말려 정말", "항상사랑합니다 아이러브유!", "우리모두열심히살아보자 파이팅", "love you30000", "오하어 (오늘하루어땠냐는뜻)", "궁금한점 궁금두점 음~궁금 맛있다 냠냠", "오좋저(오늘도좋은저녁이라는뜻이면서도이제는우리가헤어져야할시간다음에또만나요를말해야할거같다는뜻", "김치찜이오고있어 김치찜이앞으로만오고있어", "별자리가 어떻게 돼 아닌데 내 옆자린데", "우린 화이트같아 흰색처럼 그위에무슨색을덮히고입혀도 다물들듯이 우린 우리만의 추억과 스톨리를 써내려갈테야 storrrrry", "오늘도 고생많았어 잘하고 있어 파이팅!!!!!!!!!!!", "오늘 무슨 날인지 알아? 아니? You’re mine day", "고생많았다는말 해주고싶어 행복해꼭알겠지", "바쁘게살고열심히살다보면가끔 작은 것들을 놓칠 수 있는데 다 괜찮으니까 알지 인생은 기세 나도 열심히 노력할게", "시간참빠르고 근데위딧을향해가는내마음이더빨라", "전원버튼누르면세상에서제일소중한사람나온대요.", "맑은하늘상쾌한공기 습하 와우", "(나지?나일거야음나였으면좋겠다히히)", "약간 그사람되게 무빙만봐도 좀 멋지다? 는느낌 멋진사람일 것 같다? 는 느낌 드네", "뭐든할수있다는사실 파이탱 으샤샤샤 으쌰으쌰 아자자자", "뭐든할수있다는사실 파이탱 으샤샤샤 으쌰으쌰 아자자자", "뭐햄뭐햄"
 ];
 
 const partTitles = {
     hat: "모자", top: "상의", bottom: "하의", accessory: "악세사리", shoes: "신발"
 };
 
+// shoes 조사 '이'로 수정 완료!
 const partPostpositions = {
-    hat: "가", top: "가", bottom: "가", accessory: "가", shoes: "가"
+    hat: "가", top: "가", bottom: "가", accessory: "가", shoes: "이"
 };
 
 let nickname = "";
@@ -476,6 +493,11 @@ const quizPool = [
         shoes: { answer: 1, choices: ["images/shoes4.jpg", "images/shoes5.jpg", "images/shoes6.jpg"] }
     }
 ];
+
+// 처음 사이트 열렸을 때 대기화면용 실시간 순위를 미리 불러옵니다.
+window.onload = function() {
+    loadGlobalRanking("startRankList", "startRankLoading");
+};
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -600,28 +622,77 @@ function submitQuestion() {
     }
 }
 
-function finishGame() {
+async function finishGame() {
     document.getElementById("quizScreen").classList.add("hidden");
     document.getElementById("resultScreen").classList.remove("hidden");
 
     const final = Math.min(100, Math.round(totalScore));
-    document.getElementById("finalScore").innerText = final + "점";
+    
+    // 깨짐 현상('ㅁ') 방지 폰트 변경 처리 완료!
+    document.getElementById("finalScore").innerHTML = `${final}<span style="font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif; font-size: 40px; margin-left: 5px;">점</span>`;
 
-    let ranking = JSON.parse(localStorage.getItem("ootdRanking")) || [];
-    ranking.push({ name: nickname, score: final });
-    ranking.sort((a, b) => b.score - a.score);
-    ranking = ranking.slice(0, 10);
-    localStorage.setItem("ootdRanking", JSON.stringify(ranking));
+    renderReview();
 
-    const rankList = document.getElementById("rankList");
-    rankList.innerHTML = "";
-    ranking.forEach((item, index) => {
-        const li = document.createElement("li");
-        if (index === 0) li.className = "top-rank";
-        li.innerHTML = `<span>${index + 1}. ${item.name}</span> <span>${item.score}점</span>`;
-        rankList.appendChild(li);
-    });
+    // 서버(DB)에 내 점수 실시간 전송
+    try {
+        await fetch(DB_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-apikey": DB_KEY,
+                "Cache-Control": "no-cache"
+            },
+            body: JSON.stringify({ name: nickname, score: final })
+        });
+    } catch (err) {
+        console.error("점수 등록 실패:", err);
+    }
 
+    // 결과 화면용 전체 유저 등수 순으로 Top 10 가져와서 보여주기
+    loadGlobalRanking("rankList", "rankLoading");
+}
+
+// 대기화면과 결과화면의 타겟들을 매개변수로 유연하게 조절하도록 통합된 실시간 순위 조회 함수
+async function loadGlobalRanking(targetListId = "rankList", targetLoadingId = "rankLoading") {
+    const rankList = document.getElementById(targetListId);
+    const loadingText = document.getElementById(targetLoadingId);
+
+    if (!rankList || !loadingText) return;
+
+    try {
+        // 점수 높은 순 정렬 및 상위 10개 커트라인 조회 URL 설정
+        const queryUrl = `${DB_URL}?q={}&h={"$max":10}&s={"score":-1}`;
+        const response = await fetch(queryUrl, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "x-apikey": DB_KEY,
+                "Cache-Control": "no-cache"
+            }
+        });
+        const ranking = await response.json();
+
+        loadingText.classList.add("hidden");
+        rankList.innerHTML = "";
+
+        if(ranking.length === 0) {
+            rankList.innerHTML = "<li>등록된 순위가 아직 없습니다!</li>";
+            return;
+        }
+
+        ranking.forEach((item, index) => {
+            const li = document.createElement("li");
+            if (index === 0) li.className = "top-rank";
+            li.innerHTML = `<span>${index + 1}. ${item.name}</span> <span>${item.score}점</span>`;
+            rankList.appendChild(li);
+        });
+    } catch (err) {
+        loadingText.innerText = "순위를 불러오는 데 실패했습니다 ㅜ_ㅜ";
+        console.error("순위 로딩 실패:", err);
+    }
+}
+
+function renderReview() {
     const reviewSection = document.getElementById("reviewSection");
     reviewSection.innerHTML = "";
 
@@ -660,7 +731,7 @@ function finishGame() {
 
         card.innerHTML = `
             <div class="review-header">
-                <span class="review-q-num">${hist.qNum}</span>
+                <span class="review-q-num">${hist.qNum}번 문제</span>
                 <span class="review-date">${hist.date}</span>
             </div>
             <div class="review-body">
