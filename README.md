@@ -408,7 +408,7 @@ button:hover {
         </div>
         
         <div style="margin-top: 40px; text-align: center;">
-            <div class="section-title">🏆 명예의 전당 (실시간 전체 순위)</div>
+            <div class="section-title">명예의 전당</div>
             <div id="startRankLoading" class="loading-text">순위를 불러오는 중... @ ㅁ @</div>
             <ul id="startRankList" class="rank-list"></ul>
         </div>
@@ -435,10 +435,10 @@ button:hover {
             
             <button onclick="location.reload()" style="max-width:300px; margin-bottom:40px;">다시 도전하기</button>
 
-            <div class="section-title">🔍 내가 틀린 문제 & 정답 확인</div>
+            <div class="section-title">나에 대해 더 공부해야겠어😏</div>
             <div id="reviewSection" class="review-section"></div>
 
-            <div class="section-title">🏆 명예의 전당 (실시간 전체 순위)</div>
+            <div class="section-title">명예의 전당</div>
             <div id="rankLoading" class="loading-text">순위를 불러오는 중... @ ㅁ @</div>
             <ul id="rankList" class="rank-list"></ul>
             <br>
@@ -447,9 +447,10 @@ button:hover {
 </div>
 
 <script>
-// 새로운 데이터베이스 연결 정보로 연동되었습니다!
-const DB_URL = "https://sh2xl-4d24.restdb.io/rest/scores";
-const DB_KEY = "6a24c558f171ad6c0005f2df"; 
+// 새로운 'scores-32cc' 데이터베이스 실시간 주소로 연동 완료!
+const DB_URL = "https://scores-32cc.restdb.io/rest/scores";
+// ⚠️ 발급받으신 풀 액세스(Full Access) API Key를 아래 큰따옴표 안에 직접 넣어주세요!
+const DB_KEY = "a4f23b9c372292f3928c7416dca40b834b52a"; 
 
 const bubbleTexts = [
     "슬슬 두꺼운 옷을 꺼내야 할 때가 온 것 같다", "옷 따뜻하게 입어", "태어나줘서 고마워 🫶 오늘 하루 좋은 일만 있기를🙌", "미안해~ 매번 사랑한다고 하면 그 진심이 가벼워 보일까봐 그 말을 아껴두고 있어", 
@@ -631,7 +632,7 @@ async function finishGame() {
 
     renderReview();
 
-    // 새 점수가 기존 최고 점수보다 높을 때만 저장하도록 점수 검증 로직 적용!
+    // 동일 인물일 때 최고 점수 판정 및 저장 로직
     try {
         const checkUrl = `${DB_URL}?q={"name":"${nickname}"}`;
         const checkResponse = await fetch(checkUrl, {
@@ -656,9 +657,9 @@ async function finishGame() {
                     },
                     body: JSON.stringify({ name: nickname, score: final })
                 });
-                console.log("최고 점수 갱신 완료!");
+                console.log("최고기록갱신! 🐈‍⬛");
             } else {
-                console.log("기존 점수가 더 높아 최고 점수 기록을 유지합니다.");
+                console.log("뭐야뭐야 더잘한적이있잖아 /// @ ㅁ @ ///");
             }
         } else {
             await fetch(DB_URL, {
@@ -670,7 +671,7 @@ async function finishGame() {
                 },
                 body: JSON.stringify({ name: nickname, score: final })
             });
-            console.log("신규 점수 등록 완료!");
+            console.log("🐈‍⬛");
         }
     } catch (err) {
         console.error("점수 처리 중 오류 발생:", err);
@@ -701,7 +702,7 @@ async function loadGlobalRanking(targetListId = "rankList", targetLoadingId = "r
         rankList.innerHTML = "";
 
         if(ranking.length === 0) {
-            rankList.innerHTML = "<li>등록된 순위가 아직 없습니다!</li>";
+            rankList.innerHTML = "<li>등록된 순위가 아직 없습니다</li>";
             return;
         }
 
@@ -712,7 +713,7 @@ async function loadGlobalRanking(targetListId = "rankList", targetLoadingId = "r
             rankList.appendChild(li);
         });
     } catch (err) {
-        loadingText.innerText = "순위를 불러오는 데 실패했습니다 ㅜ_ㅜ";
+        loadingText.innerText = "순위를 불러오는 데 실패했습니다 ㅜ ㅜ";
         console.error("순위 로딩 실패:", err);
     }
 }
