@@ -1,4 +1,3 @@
-# 2XL
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,6 +11,14 @@
     font-family: 'Paperozi';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2') format('woff2');
     font-weight: 100;
+    font-display: swap;
+}
+
+/* [추가] 타이틀 전용 '서울관공서체 알림M' 폰트 등록 */
+@font-face {
+    font-family: 'SeoulNotice';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-Medium.woff2') format('woff2');
+    font-weight: 500;
     font-display: swap;
 }
 
@@ -62,6 +69,11 @@ h1 {
     color: var(--text-primary);
     font-size: 2rem;
     letter-spacing: -0.05em;
+}
+
+/* [추가] '꿈의 핏 2XL' 부분에만 서울알림체 지정 */
+.title-font, .title-font span {
+    font-family: 'SeoulNotice', sans-serif !important;
 }
 
 h1 span {
@@ -389,7 +401,7 @@ button:hover {
 <body>
 
 <div class="container">
-    <h1>꿈의 핏 <span>2XL</span></h1>
+    <h1 class="title-font">꿈의 핏 <span>2XL</span></h1>
 
     <div id="loginScreen">
         <div class="login">
@@ -400,7 +412,7 @@ button:hover {
     </div>
 
     <div id="quizScreen" class="hidden">
-        <div id="status" class="status">Q 1 / 10</div>
+        <div id="status" class="status">1 / 10</div>
         <div class="quiz-layout">
             <div class="selfie-box">
                 <img id="selfie" class="selfie" alt="셀카 자리">
@@ -506,7 +518,8 @@ function loadQuestion() {
     selectedAnswers = {};
     const q = questions[currentQuestion];
 
-    document.getElementById("status").innerText = `Q ${currentQuestion + 1} / 10`;
+    /* 3. 상단 퀴즈 진행 상태에서 'Q' 글자를 빼고 숫자만 노출 */
+    document.getElementById("status").innerText = `${currentQuestion + 1} / 10`;
     document.getElementById("selfie").src = q.selfie;
     document.getElementById("date").innerText = q.date;
     document.getElementById("bubble").innerText = bubbleTexts[Math.floor(Math.random() * bubbleTexts.length)];
@@ -651,7 +664,7 @@ function finishGame() {
 
         card.innerHTML = `
             <div class="review-header">
-                <span class="review-q-num">Question ${hist.qNum}</span>
+                <span class="review-q-num">${hist.qNum}</span>
                 <span class="review-date">${hist.date}</span>
             </div>
             <div class="review-body">
