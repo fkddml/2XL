@@ -482,7 +482,7 @@ const quizPool = [
     },
     {
         date: "260530",
-        selfie: "selfie1.jpg",
+        selfie: "260530셀카.jpg",
         hat: null,
         top: { answer: 1, choices: ["images/top4.jpg", "260530_상의.png", "images/top6.jpg"] },
         bottom: { answer: 0, choices: ["260530_하의.png", "images/bottom5.jpg", "images/bottom6.jpg"] },
