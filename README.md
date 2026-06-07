@@ -472,22 +472,22 @@ let gameHistory = [];
 
 const quizPool = [
     {
-        date: "2026.06.01",
+        date: "260520",
         selfie: "images/selfie1.jpg",
-        hat: { answer: 0, choices: ["images/hat1.jpg", "images/hat2.jpg", "images/hat3.jpg"] },
+        hat: { answer: 0, choices: ["images/260530_상의.png", "images/hat2.jpg", "images/hat3.jpg"] },
         top: { answer: 1, choices: ["images/top1.jpg", "images/top2.jpg", "images/top3.jpg"] },
         bottom: { answer: 2, choices: ["images/bottom1.jpg", "images/bottom2.jpg", "images/bottom3.jpg"] },
         accessory: null,
         shoes: { answer: 0, choices: ["images/shoes1.jpg", "images/shoes2.jpg", "images/shoes3.jpg"] }
     },
     {
-        date: "2026.06.02",
-        selfie: "images/selfie2.jpg",
+        date: "260530",
+        selfie: "selfie1.jpg",
         hat: null,
-        top: { answer: 0, choices: ["images/top4.jpg", "images/top5.jpg", "images/top6.jpg"] },
-        bottom: { answer: 1, choices: ["images/bottom4.jpg", "images/bottom5.jpg", "images/bottom6.jpg"] },
-        accessory: { answer: 2, choices: ["images/acc1.jpg", "images/acc2.jpg", "images/acc3.jpg"] },
-        shoes: { answer: 1, choices: ["images/shoes4.jpg", "images/shoes5.jpg", "images/shoes6.jpg"] }
+        top: { answer: 0, choices: ["images/top4.jpg", "2605301_상의.png", "images/top6.jpg"] },
+        bottom: { answer: 1, choices: ["260530_하의.png", "images/bottom5.jpg", "images/bottom6.jpg"] },
+        accessory: { answer: 2, choices: ["260530_악세사리.png", "images/acc2.jpg", "images/acc3.jpg"] },
+        shoes: { answer: 1, choices: ["images/shoes4.jpg", "images/shoes5.jpg", "260530_신발.png"] }
     }
 ];
 
