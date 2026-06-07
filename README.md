@@ -1,4 +1,3 @@
-
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -447,10 +446,9 @@ button:hover {
 </div>
 
 <script>
-// 새로운 'scores-32cc' 데이터베이스 실시간 주소로 연동 완료!
+// 데이터베이스 주소 및 새로 발급받으신 CORS 웹 전용 API 키 반영 완료!
 const DB_URL = "https://scores-32cc.restdb.io/rest/scores";
-// ⚠️ 발급받으신 풀 액세스(Full Access) API Key를 아래 큰따옴표 안에 직접 넣어주세요!
-const DB_KEY = "a4f23b9c372292f3928c7416dca40b834b52a"; 
+const DB_KEY = "6a24d27b2199ff8281033d2e"; 
 
 const bubbleTexts = [
     "슬슬 두꺼운 옷을 꺼내야 할 때가 온 것 같다", "옷 따뜻하게 입어", "태어나줘서 고마워 🫶 오늘 하루 좋은 일만 있기를🙌", "미안해~ 매번 사랑한다고 하면 그 진심이 가벼워 보일까봐 그 말을 아껴두고 있어", 
@@ -632,7 +630,6 @@ async function finishGame() {
 
     renderReview();
 
-    // 동일 인물일 때 최고 점수 판정 및 저장 로직
     try {
         const checkUrl = `${DB_URL}?q={"name":"${nickname}"}`;
         const checkResponse = await fetch(checkUrl, {
@@ -647,7 +644,9 @@ async function finishGame() {
 
         if (existingRecords.length > 0) {
             const oldRecord = existingRecords[0];
-            if (final > oldRecord.score) {
+            const oldScore = parseInt(oldRecord.score, 10) || 0;
+            
+            if (final > oldScore) {
                 const updateUrl = `${DB_URL}/${oldRecord._id}`;
                 await fetch(updateUrl, {
                     method: "PUT",
@@ -709,7 +708,8 @@ async function loadGlobalRanking(targetListId = "rankList", targetLoadingId = "r
         ranking.forEach((item, index) => {
             const li = document.createElement("li");
             if (index === 0) li.className = "top-rank";
-            li.innerHTML = `<span>${index + 1}. ${item.name}</span> <span>${item.score}점</span>`;
+            const currentScore = parseInt(item.score, 10) || 0;
+            li.innerHTML = `<span>${index + 1}. ${item.name}</span> <span>${currentScore}점</span>`;
             rankList.appendChild(li);
         });
     } catch (err) {
