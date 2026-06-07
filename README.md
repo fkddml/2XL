@@ -484,10 +484,10 @@ const quizPool = [
         date: "260530",
         selfie: "selfie1.jpg",
         hat: null,
-        top: { answer: 0, choices: ["images/top4.jpg", "260530_상의.png", "images/top6.jpg"] },
-        bottom: { answer: 1, choices: ["260530_하의.png", "images/bottom5.jpg", "images/bottom6.jpg"] },
-        accessory: { answer: 2, choices: ["260530악세사리.png", "images/acc2.jpg", "images/acc3.jpg"] },
-        shoes: { answer: 1, choices: ["images/shoes4.jpg", "images/shoes5.jpg", "260530신발.png"] }
+        top: { answer: 1, choices: ["images/top4.jpg", "260530_상의.png", "images/top6.jpg"] },
+        bottom: { answer: 0, choices: ["260530_하의.png", "images/bottom5.jpg", "images/bottom6.jpg"] },
+        accessory: { answer: 0, choices: ["260530악세사리.png", "images/acc2.jpg", "images/acc3.jpg"] },
+        shoes: { answer: 2, choices: ["images/shoes4.jpg", "images/shoes5.jpg", "260530신발.png"] }
     }
 ];
 
