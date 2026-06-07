@@ -483,6 +483,7 @@ const quizPool = [
     {
         date: "260530",
         selfie: "260530셀카.jpg",
+        reviewSelfie: "260530정답.jpg", //
         hat: null,
         top: { answer: 1, choices: ["images/top4.jpg", "260530_상의.png", "images/top6.jpg"] },
         bottom: { answer: 0, choices: ["260530_하의.png", "images/bottom5.jpg", "images/bottom6.jpg"] },
@@ -601,11 +602,13 @@ function submitQuestion() {
             correctAnswerImg: q[part].choices[correctAnswer]
         };
     });
-
+    
+        const finalReviewImg = q.reviewSelfie ? q.reviewSelfie : q.selfie;
+    
     gameHistory.push({
         qNum: currentQuestion + 1,
         date: q.date,
-        selfie: q.selfie,
+        selfie: finalReviewImg,
         partResults: partResults
     });
 
