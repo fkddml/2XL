@@ -446,7 +446,6 @@ button:hover {
 </div>
 
 <script>
-// 데이터베이스 주소 및 새로 발급받으신 CORS 웹 전용 API 키 반영 완료!
 const DB_URL = "https://scores-32cc.restdb.io/rest/scores";
 const DB_KEY = "6a24d27b2199ff8281033d2e"; 
 
@@ -623,9 +622,9 @@ async function finishGame() {
     document.getElementById("quizScreen").classList.add("hidden");
     document.getElementById("resultScreen").classList.remove("hidden");
 
-    const final = Math.min(100, Math.round(totalScore));
+    // 확실하게 숫자로 변환 후 데이터베이스로 전송
+    const final = Number(Math.min(100, Math.round(totalScore)));
     
-    // 깨짐 현상 방지
     document.getElementById("finalScore").innerHTML = `${final}<span style="font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif; font-size: 40px; margin-left: 5px;">점</span>`;
 
     renderReview();
@@ -644,7 +643,7 @@ async function finishGame() {
 
         if (existingRecords.length > 0) {
             const oldRecord = existingRecords[0];
-            const oldScore = parseInt(oldRecord.score, 10) || 0;
+            const oldScore = Number(oldRecord.score) || 0;
             
             if (final > oldScore) {
                 const updateUrl = `${DB_URL}/${oldRecord._id}`;
@@ -654,7 +653,7 @@ async function finishGame() {
                         "Content-Type": "application/json",
                         "x-apikey": DB_KEY
                     },
-                    body: JSON.stringify({ name: nickname, score: final })
+                    body: JSON.stringify({ name: nickname, score: final }) // 숫자로 업데이트
                 });
                 console.log("최고기록갱신! 🐈‍⬛");
             } else {
@@ -668,7 +667,7 @@ async function finishGame() {
                     "x-apikey": DB_KEY,
                     "Cache-Control": "no-cache"
                 },
-                body: JSON.stringify({ name: nickname, score: final })
+                body: JSON.stringify({ name: nickname, score: final }) // 숫자로 전송
             });
             console.log("🐈‍⬛");
         }
@@ -686,8 +685,7 @@ async function loadGlobalRanking(targetListId = "rankList", targetLoadingId = "r
     if (!rankList || !loadingText) return;
 
     try {
-        const queryUrl = `${DB_URL}?q={}&h={"$max":10}&s={"score":-1}`;
-        const response = await fetch(queryUrl, {
+        const response = await fetch(DB_URL, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -695,7 +693,7 @@ async function loadGlobalRanking(targetListId = "rankList", targetLoadingId = "r
                 "Cache-Control": "no-cache"
             }
         });
-        const ranking = await response.json();
+        let ranking = await response.json();
 
         loadingText.classList.add("hidden");
         rankList.innerHTML = "";
@@ -705,11 +703,19 @@ async function loadGlobalRanking(targetListId = "rankList", targetLoadingId = "r
             return;
         }
 
-        ranking.forEach((item, index) => {
+        // 받아온 데이터를 자바스크립트 내에서 숫자로 완벽히 강제 변환 후 내림차순 정렬 처리
+        ranking.forEach(item => {
+            item.score = Number(item.score) || 0;
+        });
+        ranking.sort((a, b) => b.score - a.score);
+
+        // 상위 10개만 추출
+        const topTen = ranking.slice(0, 10);
+
+        topTen.forEach((item, index) => {
             const li = document.createElement("li");
             if (index === 0) li.className = "top-rank";
-            const currentScore = parseInt(item.score, 10) || 0;
-            li.innerHTML = `<span>${index + 1}. ${item.name}</span> <span>${currentScore}점</span>`;
+            li.innerHTML = `<span>${index + 1}. ${item.name}</span> <span>${item.score}점</span>`;
             rankList.appendChild(li);
         });
     } catch (err) {
