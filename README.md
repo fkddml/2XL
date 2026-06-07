@@ -457,7 +457,7 @@ const partTitles = {
 };
 
 const partPostpositions = {
-    hat: "가", top: "가", bottom: "가", accessory: "가", shoes: "가"
+    hat: "가", top: "가", bottom: "가", accessory: "가", shoes: "이"
 };
 
 let nickname = "";
