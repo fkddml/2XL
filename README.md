@@ -424,7 +424,7 @@ button:hover {
             
             <button onclick="location.reload()" style="max-width:300px; margin-bottom:40px;">다시 도전하기</button>
 
-            <div class="section-title">🔍 내가 틀린 문제 & 정답 확인</div>
+            <div class="section-title">나에대해알려줄게</div>
             <div id="reviewSection" class="review-section"></div>
 
             <div class="section-title">떵잘알상을주도록할게 🐈‍⬛</div>
