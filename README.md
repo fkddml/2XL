@@ -628,24 +628,58 @@ async function finishGame() {
 
     const final = Math.min(100, Math.round(totalScore));
     
-    // 깨짐 현상('ㅁ') 방지 폰트 변경 처리 완료!
+    // 깨짐 현상('ㅁ') 방지 폰트 변경 처리
     document.getElementById("finalScore").innerHTML = `${final}<span style="font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif; font-size: 40px; margin-left: 5px;">점</span>`;
 
     renderReview();
 
-    // 서버(DB)에 내 점수 실시간 전송
+    // 서버(DB)에서 현재 닉네임의 기존 기록이 있는지 확인
     try {
-        await fetch(DB_URL, {
-            method: "POST",
+        const checkUrl = `${DB_URL}?q={"name":"${nickname}"}`;
+        const checkResponse = await fetch(checkUrl, {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "x-apikey": DB_KEY,
                 "Cache-Control": "no-cache"
-            },
-            body: JSON.stringify({ name: nickname, score: final })
+            }
         });
+        const existingRecords = await checkResponse.json();
+
+        if (existingRecords.length > 0) {
+            // 기존 기록이 있을 때
+            const oldRecord = existingRecords[0];
+            
+            // 새 점수가 기존 점수보다 높을 때만 업데이트 수행
+            if (final > oldRecord.score) {
+                const updateUrl = `${DB_URL}/${oldRecord._id}`;
+                await fetch(updateUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-apikey": DB_KEY
+                    },
+                    body: JSON.stringify({ name: nickname, score: final })
+                });
+                console.log("최고 점수 갱신 완료!");
+            } else {
+                console.log("기존 점수가 더 높아 기록을 유지합니다.");
+            }
+        } else {
+            // 처음 플레이하는 닉네임일 때는 새로 등록
+            await fetch(DB_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-apikey": DB_KEY,
+                    "Cache-Control": "no-cache"
+                },
+                body: JSON.stringify({ name: nickname, score: final })
+            });
+            console.log("신규 점수 등록 완료!");
+        }
     } catch (err) {
-        console.error("점수 등록 실패:", err);
+        console.error("점수 처리 중 오류 발생:", err);
     }
 
     // 결과 화면용 전체 유저 등수 순으로 Top 10 가져와서 보여주기
