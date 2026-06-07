@@ -427,7 +427,7 @@ button:hover {
             <div class="section-title">🔍 내가 틀린 문제 & 정답 확인</div>
             <div id="reviewSection" class="review-section"></div>
 
-            <div class="section-title">🏆 명예의 전당</div>
+            <div class="section-title">떵잘알상을주도록할게 🐈‍⬛</div>
             <ul id="rankList" class="rank-list"></ul>
             <br>
         </div>
