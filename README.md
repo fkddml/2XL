@@ -6,37 +6,31 @@
 <title>꿈의 핏 2XL</title>
 
 <style>
-/* 폰트 등록 */
+/* [변경] 새로운 전체 폰트 'OkDandan' 등록 */
 @font-face {
-    font-family: 'Paperozi';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2') format('woff2');
-    font-weight: 100;
-    font-display: swap;
+    font-family: 'OkDandan';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2508-2@1.0/OkDanDan-Bold.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
 }
 
-/* [추가] 타이틀 전용 '서울관공서체 알림M' 폰트 등록 */
-@font-face {
-    font-family: 'SeoulNotice';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-display: swap;
-}
-
+/* [변경] 배경색 흰색 계열, 글씨색 검정 계열로 색상 반전 */
 :root {
-    --bg: #0a0a0a;
-    --card: #141414;
-    --accent: #00F0FF; /* 네온 블루 */
-    --accent-dim: rgba(0, 240, 255, 0.15);
-    --text-primary: #F0F8FF;
-    --text-muted: #a0aec0;
-    --border-color: #2d3748;
+    --bg: #f8f9fa;            /* 연한 회색 배경 */
+    --card: #ffffff;          /* 흰색 카드 배경 */
+    --accent: #00b4d8;        /* 밝은 배경에 어울리는 진한 하늘색 */
+    --accent-dim: rgba(0, 180, 216, 0.1);
+    --text-primary: #1a1a1a;  /* 어두운 검정 계열 글씨 */
+    --text-muted: #4a5568;    /* 진한 회색 글씨 */
+    --border-color: #cbd5e1;  /* 밝은 회색 테두리 */
 }
 
+/* [변경] 타이틀을 포함한 전체 요소에 OkDandan 폰트 적용 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Paperozi', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: 'OkDandan', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
 body {
@@ -55,8 +49,8 @@ body {
     background: var(--card);
     border-radius: 24px;
     padding: 32px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 2px var(--accent);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 0 1px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .hidden {
@@ -71,14 +65,9 @@ h1 {
     letter-spacing: -0.05em;
 }
 
-/* [추가] '꿈의 핏 2XL' 부분에만 서울알림체 지정 */
-.title-font, .title-font span {
-    font-family: 'SeoulNotice', sans-serif !important;
-}
-
 h1 span {
     color: var(--accent);
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+    text-shadow: 0 0 4px rgba(0, 180, 216, 0.2);
 }
 
 .status {
@@ -102,8 +91,8 @@ input {
     padding: 16px;
     border-radius: 12px;
     border: 2px solid var(--border-color);
-    background: #1e1e1e;
-    color: #ffffff;
+    background: #ffffff;
+    color: #1a1a1a;
     font-size: 16px;
     transition: all 0.3s;
 }
@@ -111,12 +100,12 @@ input {
 input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 180, 216, 0.2);
 }
 
 button {
     background: var(--accent);
-    color: #141414;
+    color: #ffffff;
     border: none;
     padding: 16px;
     border-radius: 12px;
@@ -124,13 +113,13 @@ button {
     font-size: 16px;
     font-weight: bold;
     transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 180, 216, 0.2);
 }
 
 button:hover {
-    background: #00c8d6;
+    background: #0077b6;
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0, 240, 255, 0.5);
+    box-shadow: 0 6px 20px rgba(0, 180, 216, 0.3);
 }
 
 .quiz-layout {
@@ -140,7 +129,7 @@ button:hover {
 }
 
 .selfie-box {
-    background: #1a1a1a;
+    background: #f1f5f9;
     padding: 16px;
     border-radius: 20px;
     border: 1px solid var(--border-color);
@@ -151,7 +140,7 @@ button:hover {
     height: 450px;
     object-fit: cover;
     border-radius: 14px;
-    background: #2a2a2a;
+    background: #e2e8f0;
 }
 
 .date {
@@ -164,12 +153,12 @@ button:hover {
 .bubble {
     margin-top: 12px;
     background: var(--accent-dim);
-    border: 1px solid rgba(0, 240, 255, 0.3);
+    border: 1px solid rgba(0, 180, 216, 0.2);
     padding: 14px;
     border-radius: 14px;
     text-align: center;
     font-weight: bold;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .right {
@@ -179,7 +168,7 @@ button:hover {
 }
 
 .category {
-    background: #1a1a1a;
+    background: #f1f5f9;
     padding: 16px;
     border-radius: 16px;
     border: 1px solid var(--border-color);
@@ -187,7 +176,7 @@ button:hover {
 
 .category h3 {
     margin-bottom: 12px;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 1rem;
     border-left: 4px solid var(--accent);
     padding-left: 8px;
@@ -207,17 +196,17 @@ button:hover {
     border: 3px solid transparent;
     cursor: pointer;
     transition: all 0.2s;
-    background: #2a2a2a;
+    background: #e2e8f0;
 }
 
 .choice:hover {
     transform: scale(1.05);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 .selected {
     border-color: var(--accent) !important;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 12px rgba(0, 180, 216, 0.4);
 }
 
 .result {
@@ -229,13 +218,13 @@ button:hover {
     font-weight: 900;
     margin: 10px 0 30px 0;
     color: var(--accent);
-    text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    text-shadow: 0 0 10px rgba(0, 180, 216, 0.2);
 }
 
 .section-title {
     font-size: 1.3rem;
     margin: 40px 0 16px 0;
-    color: #ffffff;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -249,7 +238,7 @@ button:hover {
 }
 
 .rank-list li {
-    background: #1a1a1a;
+    background: #f1f5f9;
     padding: 14px 20px;
     margin-bottom: 10px;
     border-radius: 12px;
@@ -271,7 +260,7 @@ button:hover {
 }
 
 .review-card {
-    background: #1a1a1a;
+    background: #f1f5f9;
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 20px;
@@ -282,7 +271,7 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #2d3748;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 10px;
     margin-bottom: 16px;
 }
@@ -308,7 +297,7 @@ button:hover {
     height: 150px;
     object-fit: cover;
     border-radius: 8px;
-    background: #2a2a2a;
+    background: #e2e8f0;
 }
 
 .review-details {
@@ -318,13 +307,14 @@ button:hover {
 }
 
 .review-item {
-    background: #222;
+    background: #ffffff;
     padding: 10px 14px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 0.95rem;
+    border: 1px solid #e2e8f0;
 }
 
 .review-item.correct {
@@ -337,7 +327,7 @@ button:hover {
 
 .part-name {
     font-weight: bold;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .answer-compare {
@@ -354,12 +344,12 @@ button:hover {
 }
 
 .badge.bad-correct {
-    background: rgba(0, 240, 255, 0.2);
+    background: var(--accent-dim);
     color: var(--accent);
 }
 
 .badge.bad-wrong {
-    background: rgba(255, 74, 74, 0.2);
+    background: rgba(255, 74, 74, 0.1);
     color: #ff4a4a;
 }
 
@@ -368,7 +358,7 @@ button:hover {
     height: 32px;
     object-fit: cover;
     border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
     vertical-align: middle;
 }
 
@@ -401,7 +391,7 @@ button:hover {
 <body>
 
 <div class="container">
-    <h1 class="title-font">꿈의 핏 <span>2XL</span></h1>
+    <h1>꿈의 핏 <span>2XL</span></h1>
 
     <div id="loginScreen">
         <div class="login">
@@ -451,6 +441,11 @@ const bubbleTexts = [
 
 const partTitles = {
     hat: "모자", top: "상의", bottom: "하의", accessory: "악세사리", shoes: "신발"
+};
+
+/* [추가] 조사가 어울리게 나오도록 부위별 메시지 세팅 */
+const partPostpositions = {
+    hat: "가", top: "가", bottom: "가", accessory: "가", shoes: "가"
 };
 
 let nickname = "";
@@ -518,7 +513,6 @@ function loadQuestion() {
     selectedAnswers = {};
     const q = questions[currentQuestion];
 
-    /* 3. 상단 퀴즈 진행 상태에서 'Q' 글자를 빼고 숫자만 노출 */
     document.getElementById("status").innerText = `${currentQuestion + 1} / 10`;
     document.getElementById("selfie").src = q.selfie;
     document.getElementById("date").innerText = q.date;
@@ -564,9 +558,11 @@ function submitQuestion() {
     const keys = ["hat", "top", "bottom", "accessory", "shoes"];
     keys.forEach(key => { if (q[key]) activeParts.push(key); });
 
+    /* [변경] 경고 알림창 멘트를 요구사항에 맞춰 수정 */
     for (let part of activeParts) {
         if (selectedAnswers[part] === undefined) {
-            alert(`${partTitles[part]} 부위를 선택해주세요! 👀`);
+            const postposition = partPostpositions[part] || "이";
+            alert(`${partTitles[part]}${postposition} 빠졌잖아 @ ㅁ @`);
             return;
         }
     }
