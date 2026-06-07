@@ -1,5 +1,5 @@
-theme: jekyll-theme-minimal
-title: ""
+title: false
+name: true
 
 <!DOCTYPE html>
 <html lang="ko">
