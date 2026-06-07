@@ -1,5 +1,4 @@
-title: false
-name: true
+
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
