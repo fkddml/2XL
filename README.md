@@ -5,7 +5,7 @@
 <title>꿈의 핏 2XL</title>
 
 <style>
-/* 새로운 전체 폰트 'OkDandan' 등록 */
+/* 폰트 */
 @font-face {
     font-family: 'OkDandan';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2508-2@1.0/OkDanDan-Bold.woff2') format('woff2');
@@ -625,7 +625,7 @@ async function finishGame() {
     document.getElementById("quizScreen").classList.add("hidden");
     document.getElementById("resultScreen").classList.remove("hidden");
 
-    // 확실하게 숫자로 변환 후 데이터베이스로 전송
+    // 숫자로 변환 데이터베이스 전송
     const final = Number(Math.min(100, Math.round(totalScore)));
     
     document.getElementById("finalScore").innerHTML = `${final}<span style="font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif; font-size: 40px; margin-left: 5px;">점</span>`;
@@ -656,7 +656,7 @@ async function finishGame() {
                         "Content-Type": "application/json",
                         "x-apikey": DB_KEY
                     },
-                    body: JSON.stringify({ name: nickname, score: final }) // 숫자로 업데이트
+                    body: JSON.stringify({ name: nickname, score: final }) // 숫자
                 });
                 console.log("최고기록갱신! 🐈‍⬛");
             } else {
@@ -706,7 +706,7 @@ async function loadGlobalRanking(targetListId = "rankList", targetLoadingId = "r
             return;
         }
 
-        // 받아온 데이터를 자바스크립트 내에서 숫자로 완벽히 강제 변환 후 내림차순 정렬 처리
+        // 받아온 데이터 자바스크립트 내 숫자 강제 변환 후 내림차순 정렬 처리
         ranking.forEach(item => {
             item.score = Number(item.score) || 0;
         });
